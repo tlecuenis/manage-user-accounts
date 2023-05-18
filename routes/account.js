@@ -1,8 +1,8 @@
-import express from "express";
-import {USERS_BBDD} from '../bbdd.js';
+import { Router } from "express";
+import { USERS_BBDD } from '../bbdd.js';
 
 
-const accountRouter = express.Router();
+const accountRouter = Router();
 
 //Obtener detalles de una cuenta a partir del guID
 accountRouter.get("/:_id", (req, res) => {
@@ -19,7 +19,7 @@ accountRouter.post("/", (req, res) => {
     //si en la petición no están estos datos error 400
     if (!_id || !name) return res.status(400).send();
 
-    const user = USERS_BBDD.find(user => user._id === req.body._id);
+    const user = USERS_BBDD.find(user => user._id === _id);
 
     //si ya existe un usuario con ese id error 409
     if(user) return res.status(409).send();
@@ -33,6 +33,7 @@ accountRouter.post("/", (req, res) => {
 
 //Actualizar el nombre de una cuenta
 accountRouter.patch("/:_id", (req, res) => {
+    const { name } = req.body;
     //si no enviamos nada en el body...
     if(!req.body) return res.status(400).send();
     
@@ -42,7 +43,7 @@ accountRouter.patch("/:_id", (req, res) => {
     if(!user) return res.status(404).send();
     
     //copiamos el nombre en el usuario
-    user.name = req.body;
+    user.name = name;
     
     console.log(req.params._id);
     res.send(user)
